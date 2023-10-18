@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public bool gameOver = false;
     public AudioClip jumpSound;
     public AudioClip crashSound;
+    public ParticleSystem dirtParticle;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z) && isOnGround && !gameOver) 
         {
+            dirtParticle.Stop();
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
             playerAnim.SetTrigger("Jump_trig");
@@ -40,9 +42,11 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
+            dirtParticle.Play();
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
+            dirtParticle.Stop();
             playerAudio.PlayOneShot(crashSound, 1.0f);
             gameOver = true;
             Debug.Log("Game Over!");
